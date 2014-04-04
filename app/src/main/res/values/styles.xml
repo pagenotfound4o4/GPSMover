@@ -1,6 +1,6 @@
 <resources>
     <!-- Application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar"></style>
+    <style name="AppTheme" parent="android:Theme.Holo"></style>
 
     <style name="zoom_button">
         <item name="android:textSize">30sp</item>
