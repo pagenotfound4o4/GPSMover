@@ -53,10 +53,6 @@ public class GPSMoverService extends Service
         mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         mLocationManager.addTestProvider(LocationManager.GPS_PROVIDER, false, false, false, false,
                 false, false, false, Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
-        // test part
-        this.current_lng = 120.0;
-        this.current_lat = 30.0;
-
         Common.log("service created!");
     }
 
@@ -72,18 +68,15 @@ public class GPSMoverService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
+        // initialize location
+        current_lng = intent.getExtras().getDouble("longitude");
+        current_lat = intent.getExtras().getDouble("latitude");
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY),
                 SensorManager.SENSOR_DELAY_UI);
         startForeground(NOTIFICATION_ID, createNotification(createLocation()));
         handler.post(updateGpsThread);
         Common.log("service started!");
         return Service.START_STICKY;
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        MyBinder mBinder = new MyBinder();
-        return mBinder;
     }
 
     /**
@@ -138,13 +131,18 @@ public class GPSMoverService extends Service
         }
     };
 
+    @Override
+    public IBinder onBind(Intent intent) {
+        return new MyBinder();
+    }
+
     public class MyBinder extends Binder {
         /**
-         * Get current location
-         * @return current location
+         * Get GPSMover Service
+         * @return service instance
          */
-        public LatLng getLocation() {
-            return new LatLng(current_lat, current_lng);
+        public GPSMoverService getService() {
+            return instance;
         }
     }
 
@@ -179,5 +177,22 @@ public class GPSMoverService extends Service
                 current_lat = -90.0;
             }
         }
+    }
+
+    /**
+     * get current coordinate
+     * @return current latitude and longitude
+     */
+    public LatLng getCurrentLatLng() {
+        return new LatLng(current_lat, current_lng);
+    }
+
+    /**
+     * set new coordinate
+     * @param newPos new coordinate
+     */
+    public void setCurrentLocation(LatLng newPos) {
+        current_lat = newPos.latitude;
+        current_lng = newPos.longitude;
     }
 }
