@@ -3,9 +3,11 @@ package org.unlucky.gpsmover.app;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.IBinder;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,21 +24,30 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.unlucky.gpsmover.app.util.Common;
+
 public class MainActivity extends FragmentActivity
-        implements View.OnClickListener {
+        implements View.OnClickListener, GotoLocationDialogFragment.GotoLocationDialogListener,
+        AddLocationDialogFragment.AddLocationDialogListener {
+    private static final int UPDATE_INTERVAL_TIME = 1000; // 1s
+    private static final String DLG_ADD_LOCATION = "AddLocationDialog";
+    private static final String DLG_GOTO_LOCATION = "GotoLocationDialog";
+
     private Button start_btn, stop_btn;
     private Button zoom_in_btn, zoom_out_btn;
     private ImageButton mode_btn, search_btn, history_btn, fav_btn;
 
+    private LatLng current_location;
     private GoogleMap mMap;
     private GoogleMapOptions options = new GoogleMapOptions();
     private MarkerOptions marker = new MarkerOptions();
+    private GPSMoverService gpsMoverService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        gpsMoverService = null;
         initMap();
         initUI();
     }
@@ -55,6 +66,16 @@ public class MainActivity extends FragmentActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == R.id.action_add_location) {
+            AddLocationDialogFragment dialog = new AddLocationDialogFragment();
+            dialog.show(getSupportFragmentManager(), DLG_ADD_LOCATION);
+            return true;
+        } else if (id == R.id.action_goto_location) {
+            GotoLocationDialogFragment dialog = new GotoLocationDialogFragment();
+            dialog.show(getSupportFragmentManager(), DLG_GOTO_LOCATION);
+            return true;
+        } else if (id == R.id.action_about) {
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -138,10 +159,8 @@ public class MainActivity extends FragmentActivity
         mMap.getUiSettings().setTiltGesturesEnabled(false);
 
         // init a marker
-        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         LatLng pos = new LatLng(30, 120);
-        mMap.addMarker(marker.position(pos).title("Unlucky"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
+        updateMapMarker(pos);
     }
 
     public int dpToPx(int dp) {
@@ -160,12 +179,57 @@ public class MainActivity extends FragmentActivity
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            GPSMoverService.MyBinder mBinder = (GPSMoverService.MyBinder)service;
+            gpsMoverService = ((GPSMoverService.MyBinder)service).getService();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            gpsMoverService = null;
         }
     };
 
+    Handler handler = new Handler();
+
+    Runnable updateLocationThread = new Runnable() {
+        @Override
+        public void run() {
+            current_location = gpsMoverService.getCurrentLatLng();
+            updateMapMarker(current_location);
+            handler.postDelayed(updateLocationThread, UPDATE_INTERVAL_TIME);
+        }
+    };
+
+    private void updateMapMarker(LatLng pos) {
+        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        mMap.addMarker(marker.position(pos).title("Unlucky"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
+    }
+
+    /**
+     * check whether the service is running
+     * @param name name of service
+     * @return true - service is running<br/>
+     *         false - service is not running
+     */
+    private boolean isServiceRunning(String name) {
+        // TODO: not implemented
+        return false;
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        String tag = dialog.getTag();
+        if (tag.equals(DLG_ADD_LOCATION)) {
+            String str = ((AddLocationDialogFragment)dialog).getEditText();
+            Common.log("get text from add->" + str);
+        } else if (tag.equals(DLG_GOTO_LOCATION)) {
+            String str = ((GotoLocationDialogFragment)dialog).getEditText();
+            Common.log("get text from goto->" + str);
+        }
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        dialog.dismiss();
+    }
 }
