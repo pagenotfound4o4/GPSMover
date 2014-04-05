@@ -1,8 +1,11 @@
 package org.unlucky.gpsmover.app;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -22,6 +25,7 @@ import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.unlucky.gpsmover.app.util.Common;
@@ -33,6 +37,8 @@ public class MainActivity extends FragmentActivity
     private static final String DLG_ADD_LOCATION = "AddLocationDialog";
     private static final String DLG_GOTO_LOCATION = "GotoLocationDialog";
 
+    private boolean isServiceBind = false;
+
     private Button start_btn, stop_btn;
     private Button zoom_in_btn, zoom_out_btn;
     private ImageButton mode_btn, search_btn, history_btn, fav_btn;
@@ -40,7 +46,8 @@ public class MainActivity extends FragmentActivity
     private LatLng current_location;
     private GoogleMap mMap;
     private GoogleMapOptions options = new GoogleMapOptions();
-    private MarkerOptions marker = new MarkerOptions();
+    private MarkerOptions markerOpt = new MarkerOptions();
+    private Marker marker;
     private GPSMoverService gpsMoverService;
 
     @Override
@@ -85,18 +92,26 @@ public class MainActivity extends FragmentActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.start_btn:
-                Toast.makeText(this, "Start Fake Location", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.setClass(this, GPSMoverService.class);
+                intent.putExtra("longitude", 120.0);
+                intent.putExtra("latitude", 30.0);
                 startService(intent);
                 bindService(intent, conn, BIND_AUTO_CREATE);
+                Toast.makeText(this, "Start Fake Location", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.stop_btn:
-                Toast.makeText(this, "Stop Fake Location", Toast.LENGTH_SHORT).show();
-                Intent intent1 = new Intent();
-                intent1.setClass(this, GPSMoverService.class);
-                unbindService(conn);
-                stopService(intent1);
+                handler.removeCallbacks(updateLocationThread);
+                if (isServiceBind) {
+                    unbindService(conn);
+                    isServiceBind = false;
+                    Toast.makeText(this, "Stop Fake Location", Toast.LENGTH_SHORT).show();
+                }
+                if (isServiceRunning(GPSMoverService.class.getName())) {
+                    Intent intent1 = new Intent();
+                    intent1.setClass(this, GPSMoverService.class);
+                    stopService(intent1);
+                }
                 break;
             case R.id.zoom_in_btn:
                 mMap.animateCamera(CameraUpdateFactory.zoomIn());
@@ -159,8 +174,10 @@ public class MainActivity extends FragmentActivity
         mMap.getUiSettings().setTiltGesturesEnabled(false);
 
         // init a marker
-        LatLng pos = new LatLng(30, 120);
-        updateMapMarker(pos);
+        current_location = new LatLng(30, 120);
+        markerOpt.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        marker = mMap.addMarker(markerOpt.position(current_location).title("Unlucky"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(current_location));
     }
 
     public int dpToPx(int dp) {
@@ -176,15 +193,17 @@ public class MainActivity extends FragmentActivity
     }
 
     ServiceConnection conn = new ServiceConnection() {
-
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             gpsMoverService = ((GPSMoverService.MyBinder)service).getService();
+            isServiceBind = true;
+            handler.post(updateLocationThread);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             gpsMoverService = null;
+            isServiceBind = false;
         }
     };
 
@@ -193,15 +212,29 @@ public class MainActivity extends FragmentActivity
     Runnable updateLocationThread = new Runnable() {
         @Override
         public void run() {
-            current_location = gpsMoverService.getCurrentLatLng();
+            LatLng prev = current_location;
+            if (gpsMoverService != null) {
+                current_location = gpsMoverService.getCurrentLatLng();
+            }
+            // calc distance
+            Location a = new Location("prev");
+            a.setLatitude(prev.latitude);
+            a.setLongitude(prev.longitude);
+            //Common.log("Location a is " + a.toString());
+            Location b = new Location("current");
+            b.setLatitude(current_location.latitude);
+            b.setLongitude(current_location.longitude);
+            //Common.log("Location b is " + b.toString());
+            float dist = a.distanceTo(b);
+            Common.log("distance is " + dist);
+
             updateMapMarker(current_location);
             handler.postDelayed(updateLocationThread, UPDATE_INTERVAL_TIME);
         }
     };
 
     private void updateMapMarker(LatLng pos) {
-        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        mMap.addMarker(marker.position(pos).title("Unlucky"));
+        marker.setPosition(pos);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
     }
 
@@ -212,7 +245,12 @@ public class MainActivity extends FragmentActivity
      *         false - service is not running
      */
     private boolean isServiceRunning(String name) {
-        // TODO: not implemented
+        ActivityManager manager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (service.service.getClassName().equals(name)) {
+                return true;
+            }
+        }
         return false;
     }
 
