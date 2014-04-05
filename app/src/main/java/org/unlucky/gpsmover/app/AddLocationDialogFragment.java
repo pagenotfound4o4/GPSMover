@@ -43,8 +43,8 @@ public class AddLocationDialogFragment extends DialogFragment {
         View view = LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_add_location, null);
         name = (EditText)view.findViewById(R.id.add_location_edt);
-        builder.setTitle(R.string.dialog_goto_location_title)
-                .setIcon(android.R.drawable.ic_menu_myplaces)
+        builder.setTitle(R.string.dialog_add_location_title)
+                .setIcon(android.R.drawable.ic_menu_add)
                 .setView(view);
 
         // set listener
