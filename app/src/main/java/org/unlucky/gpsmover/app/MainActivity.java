@@ -94,8 +94,8 @@ public class MainActivity extends FragmentActivity
             case R.id.start_btn:
                 Intent intent = new Intent();
                 intent.setClass(this, GPSMoverService.class);
-                intent.putExtra("longitude", 120.0);
-                intent.putExtra("latitude", 30.0);
+                intent.putExtra("longitude", current_location.longitude);
+                intent.putExtra("latitude", current_location.latitude);
                 startService(intent);
                 bindService(intent, conn, BIND_AUTO_CREATE);
                 Toast.makeText(this, "Start Fake Location", Toast.LENGTH_SHORT).show();
@@ -174,7 +174,7 @@ public class MainActivity extends FragmentActivity
         mMap.getUiSettings().setTiltGesturesEnabled(false);
 
         // init a marker
-        current_location = new LatLng(30, 120);
+        current_location = new LatLng(30.0, 120.0);
         markerOpt.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         marker = mMap.addMarker(markerOpt.position(current_location).title("Unlucky"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(current_location));
