@@ -37,7 +37,6 @@ public class GPSMoverService extends Service
     private double current_lat, current_lng;
     private SensorManager mSensorManager;
     private LocationManager mLocationManager;
-    private NotificationManager mNotificationManager;
 
     public static GPSMoverService instance = null;
 
@@ -47,10 +46,9 @@ public class GPSMoverService extends Service
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
+        instance = GPSMoverService.this;
         mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         mLocationManager.addTestProvider(LocationManager.GPS_PROVIDER, false, false, false, false,
                 false, false, false, Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
         Common.log("service created!");
