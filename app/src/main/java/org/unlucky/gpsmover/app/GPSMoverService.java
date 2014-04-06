@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -119,12 +120,19 @@ public class GPSMoverService extends Service
     Runnable updateGpsThread = new Runnable() {
         @Override
         public void run() {
-            Location location = createLocation();
-            mLocationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
-            mLocationManager.setTestProviderStatus(LocationManager.GPS_PROVIDER, LocationProvider.AVAILABLE,
-                    null, System.currentTimeMillis());
-            mLocationManager.setTestProviderLocation(LocationManager.GPS_PROVIDER, location);// update location
-            startForeground(NOTIFICATION_ID, createNotification(location));// update notification
+                Location location = createLocation();
+                mLocationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
+                mLocationManager.setTestProviderStatus(LocationManager.GPS_PROVIDER, LocationProvider.AVAILABLE,
+                        null, System.currentTimeMillis());
+            int value = changeMockLocationSettings();
+            try {
+                mLocationManager.setTestProviderLocation(LocationManager.GPS_PROVIDER, location);// update location
+                startForeground(NOTIFICATION_ID, createNotification(location));// update notification
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } finally {
+                changeMockLocationSettings(value);
+            }
             handler.postDelayed(updateGpsThread, UPDATE_INTERVAL_TIME);
         }
     };
@@ -192,5 +200,35 @@ public class GPSMoverService extends Service
     public void setCurrentLocation(LatLng newPos) {
         current_lat = newPos.latitude;
         current_lng = newPos.longitude;
+    }
+
+    /**
+     * change mock location setttings to allow mock location and return default value
+     * @return default value
+     */
+    private int changeMockLocationSettings() {
+        int value = 1;
+        try {
+            value = Settings.Secure.getInt(getContentResolver(),
+                    Settings.Secure.ALLOW_MOCK_LOCATION);
+            Settings.Secure.putInt(getContentResolver(),
+                    Settings.Secure.ALLOW_MOCK_LOCATION, 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return value;
+    }
+
+    /**
+     * restore old value of allow mock location
+     * @param old_value
+     */
+    private void changeMockLocationSettings(int old_value) {
+        try {
+            Settings.Secure.putInt(getContentResolver(),
+                    Settings.Secure.ALLOW_MOCK_LOCATION, old_value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
