@@ -34,6 +34,7 @@ public class MainActivity extends FragmentActivity
         implements View.OnClickListener, GotoLocationDialogFragment.GotoLocationDialogListener,
         AddLocationDialogFragment.AddLocationDialogListener {
     private static final int UPDATE_INTERVAL_TIME = 1000; // 1s
+    private static final int REQ_SETTINGS = 1;
     private static final String DLG_ADD_LOCATION = "AddLocationDialog";
     private static final String DLG_GOTO_LOCATION = "GotoLocationDialog";
 
@@ -60,19 +61,25 @@ public class MainActivity extends FragmentActivity
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQ_SETTINGS) {
+            // TODO: handle return from settings
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            Intent intent = new Intent();
+            intent.setClass(this, SettingsActivity.class);
+            startActivityForResult(intent, REQ_SETTINGS);
             return true;
         } else if (id == R.id.action_add_location) {
             AddLocationDialogFragment dialog = new AddLocationDialogFragment();
