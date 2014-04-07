@@ -1,7 +1,6 @@
 package org.unlucky.gpsmover.app;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -50,13 +49,25 @@ public class GPSMoverService extends Service
         instance = GPSMoverService.this;
         mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        mLocationManager.addTestProvider(LocationManager.GPS_PROVIDER, false, false, false, false,
-                false, false, false, Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
+        int value = setMockLocationSettings();
+        try {
+            mLocationManager.addTestProvider(LocationManager.GPS_PROVIDER, false, false, false, false,
+                    false, false, false, Criteria.POWER_HIGH, Criteria.ACCURACY_FINE);
+            mLocationManager.addTestProvider(LocationManager.NETWORK_PROVIDER, false, false, false, false,
+                    false, false, false, Criteria.POWER_LOW, Criteria.ACCURACY_COARSE);
+            mLocationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
+            mLocationManager.setTestProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            restoreMockLocationSettings(value);
+        }
         Common.log("service created!");
     }
 
     @Override
     public void onDestroy() {
+        handler.removeCallbacks(updateGpsThread);
         instance = null;
         mSensorManager.unregisterListener(this);
         stopForeground(true);
@@ -72,7 +83,7 @@ public class GPSMoverService extends Service
         current_lat = intent.getExtras().getDouble("latitude");
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY),
                 SensorManager.SENSOR_DELAY_UI);
-        startForeground(NOTIFICATION_ID, createNotification(createLocation()));
+        startForeground(NOTIFICATION_ID, createNotification(new LatLng(current_lat, current_lng)));
         handler.post(updateGpsThread);
         Common.log("service started!");
         return Service.START_STICKY;
@@ -80,15 +91,16 @@ public class GPSMoverService extends Service
 
     /**
      * Create customized notification
+     * @param latlng coordinate in notification
      * @return customized notification
      */
-    private Notification createNotification(Location location) {
+    private Notification createNotification(LatLng latlng) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
         mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(getResources().getString(R.string.app_name))
                 .setContentText(String.format(getResources()
-                        .getString(R.string.msg_fake_gps), location.getLongitude(), location.getLatitude()))
+                        .getString(R.string.msg_fake_gps), latlng.longitude, latlng.latitude))
                 .setAutoCancel(false);
 
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -101,8 +113,13 @@ public class GPSMoverService extends Service
         return notification;
     }
 
-    private Location createLocation() {
-        Location location = new Location(LocationManager.GPS_PROVIDER);
+    /**
+     * create a location based on current coordinate and given tag
+     * @param tag type of location, GPS or Network
+     * @return created location
+     */
+    private Location createLocation(String tag) {
+        Location location = new Location(tag);
         location.setLatitude(current_lat);
         location.setLongitude(current_lng);
         //location.setAltitude(0.0);
@@ -120,19 +137,23 @@ public class GPSMoverService extends Service
     Runnable updateGpsThread = new Runnable() {
         @Override
         public void run() {
-                Location location = createLocation();
-                mLocationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
-                mLocationManager.setTestProviderStatus(LocationManager.GPS_PROVIDER, LocationProvider.AVAILABLE,
-                        null, System.currentTimeMillis());
-            int value = changeMockLocationSettings();
+            Location gps_location = createLocation(LocationManager.GPS_PROVIDER);
+            Location network_location = createLocation(LocationManager.NETWORK_PROVIDER);
+            //mLocationManager.setTestProviderStatus(LocationManager.GPS_PROVIDER, LocationProvider.AVAILABLE,
+            //        null, System.currentTimeMillis());
+            //mLocationManager.setTestProviderStatus(LocationManager.NETWORK_PROVIDER, LocationProvider.AVAILABLE,
+            //        null, System.currentTimeMillis());
+            int value = setMockLocationSettings();
             try {
-                mLocationManager.setTestProviderLocation(LocationManager.GPS_PROVIDER, location);// update location
-                startForeground(NOTIFICATION_ID, createNotification(location));// update notification
+                mLocationManager.setTestProviderLocation(LocationManager.GPS_PROVIDER, gps_location);
+                mLocationManager.setTestProviderLocation(LocationManager.NETWORK_PROVIDER, network_location);
             } catch (SecurityException e) {
                 e.printStackTrace();
             } finally {
-                changeMockLocationSettings(value);
+                restoreMockLocationSettings(value);
             }
+            startForeground(NOTIFICATION_ID, createNotification(
+                    new LatLng(gps_location.getLatitude(), gps_location.getLongitude())));// update notification
             handler.postDelayed(updateGpsThread, UPDATE_INTERVAL_TIME);
         }
     };
@@ -203,10 +224,10 @@ public class GPSMoverService extends Service
     }
 
     /**
-     * change mock location setttings to allow mock location and return default value
+     * set mock location setttings to allow mock location and return default value
      * @return default value
      */
-    private int changeMockLocationSettings() {
+    private int setMockLocationSettings() {
         int value = 1;
         try {
             value = Settings.Secure.getInt(getContentResolver(),
@@ -221,12 +242,12 @@ public class GPSMoverService extends Service
 
     /**
      * restore old value of allow mock location
-     * @param old_value
+     * @param restore_value value that will be restored
      */
-    private void changeMockLocationSettings(int old_value) {
+    private void restoreMockLocationSettings(int restore_value) {
         try {
             Settings.Secure.putInt(getContentResolver(),
-                    Settings.Secure.ALLOW_MOCK_LOCATION, old_value);
+                    Settings.Secure.ALLOW_MOCK_LOCATION, restore_value);
         } catch (Exception e) {
             e.printStackTrace();
         }
