@@ -12,4 +12,6 @@
     <string name="dialog_add_location_hint">Type name here</string>
     <string name="dialog_goto_location_title">Go to location</string>
     <string name="dialog_goto_location_hint">latitude, longitude</string>
+    <string name="map_marker_title">Current Location</string>
+    <string name="map_marker_snippet" formatted="false">(%.6f, %.6f)</string>
 </resources>

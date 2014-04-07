@@ -183,7 +183,10 @@ public class MainActivity extends FragmentActivity
         // init a marker
         current_location = new LatLng(30.0, 120.0);
         markerOpt.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        marker = mMap.addMarker(markerOpt.position(current_location).title("Unlucky"));
+        marker = mMap.addMarker(markerOpt.position(current_location)
+                .title(getString(R.string.map_marker_title))
+                .snippet(String.format(getString(R.string.map_marker_snippet),
+                        current_location.latitude, current_location.longitude)));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(current_location));
     }
 
@@ -242,6 +245,9 @@ public class MainActivity extends FragmentActivity
 
     private void updateMapMarker(LatLng pos) {
         marker.setPosition(pos);
+        marker.setTitle(getString(R.string.map_marker_title));
+        marker.setSnippet(String.format(getString(R.string.map_marker_snippet),
+                pos.latitude, pos.longitude));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
     }
 
