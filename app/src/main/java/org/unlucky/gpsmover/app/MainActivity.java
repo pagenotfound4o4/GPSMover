@@ -112,12 +112,12 @@ public class MainActivity extends FragmentActivity
                 if (isServiceBind) {
                     unbindService(conn);
                     isServiceBind = false;
-                    Toast.makeText(this, "Stop Fake Location", Toast.LENGTH_SHORT).show();
                 }
                 if (isServiceRunning(GPSMoverService.class.getName())) {
                     Intent intent1 = new Intent();
                     intent1.setClass(this, GPSMoverService.class);
                     stopService(intent1);
+                    Toast.makeText(this, "Stop Fake Location", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.zoom_in_btn:
@@ -274,8 +274,19 @@ public class MainActivity extends FragmentActivity
             String str = ((AddLocationDialogFragment)dialog).getEditText();
             Common.log("get text from add->" + str);
         } else if (tag.equals(DLG_GOTO_LOCATION)) {
-            String str = ((GotoLocationDialogFragment)dialog).getEditText();
-            Common.log("get text from goto->" + str);
+            String[] text_array = ((GotoLocationDialogFragment)dialog).getEditText().split(",");
+            if (text_array.length == 2) {
+                try {
+                    double lat = Double.valueOf(text_array[0]).doubleValue();
+                    double lng = Double.valueOf(text_array[1]).doubleValue();
+                    current_location = new LatLng(lat, lng);
+                    updateMapMarker(current_location);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Toast.makeText(this, getString(R.string.error_format), Toast.LENGTH_SHORT);
+            }
         }
     }
 
