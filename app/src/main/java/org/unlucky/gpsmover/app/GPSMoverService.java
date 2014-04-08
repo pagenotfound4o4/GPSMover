@@ -98,9 +98,8 @@ public class GPSMoverService extends Service
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
         mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
                 .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle(getResources().getString(R.string.app_name))
-                .setContentText(String.format(getResources()
-                        .getString(R.string.msg_fake_gps), latlng.longitude, latlng.latitude))
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(String.format(getString(R.string.msg_fake_gps), latlng.longitude, latlng.latitude))
                 .setAutoCancel(false);
 
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
