@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/action_settings" >
+
+    <PreferenceCategory android:key="perf_key_gps_settings"
+        android:title="@string/perf_title_gps_settings">
+
+        <EditTextPreference android:key="perf_key_accuracy"
+            android:title="@string/perf_title_accuracy"
+            android:summary="@string/perf_summary_accuracy"/>
+        <EditTextPreference android:key="perf_key_update_interval"
+            android:title="@string/perf_title_update_interval"
+            android:summary="@string/perf_summary_update_interval"/>
+        <CheckBoxPreference android:key="perf_key_auto_altitude"
+            android:title="@string/perf_title_auto_altitude"
+            android:summary="@string/perf_summary_auto_altitude"
+            android:disableDependentsState="true"/>
+        <EditTextPreference android:key="perf_key_manual_altitude"
+            android:title="@string/perf_title_manual_altitude"
+            android:summary="@string/perf_summary_manual_altitude"
+            android:dependency="perf_key_auto_altitude"/>
+        <EditTextPreference android:key="perf_key_gps_error"
+            android:title="@string/perf_title_gps_error"
+            android:summary="@string/perf_summary_gps_error"/>
+    </PreferenceCategory>
 </PreferenceScreen>
