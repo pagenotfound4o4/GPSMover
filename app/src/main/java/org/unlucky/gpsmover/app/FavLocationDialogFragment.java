@@ -11,17 +11,17 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * A dialog with listview that show user's favourite locations.
  */
-public class FavLocationDialogFragment extends DialogFragment
-        implements AdapterView.OnItemClickListener{
+public class FavLocationDialogFragment extends DialogFragment {
 
     public interface FavLocationDialogListener {
-        public void onItemClicked(AdapterView<?> parent, View view, int position, long id);
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id);
     }
 
     private FavLocationDialogListener mListener;
@@ -48,6 +48,13 @@ public class FavLocationDialogFragment extends DialogFragment
         mListView = (ListView)view.findViewById(R.id.fav_location_list);
         mListView.setAdapter(new FavLocationListAdapter(getActivity(),
                 R.layout.list_item_fav_location, getData()));
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mListener.onItemClick(parent, view, position, id);
+                dismiss();
+            }
+        });
         builder.setTitle(getString(R.string.dialog_fav_location_title))
                 .setIcon(R.drawable.ic_menu_star)
                 .setView(view);
@@ -59,12 +66,15 @@ public class FavLocationDialogFragment extends DialogFragment
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         //TODO: read data from resource
 
-        return list;
-    }
+        //test data
+        for (int i=0; i<10; i++) {
+            Map<String, Object> item = new HashMap<String, Object>();
+            item.put("title", "Location " + i);
+            item.put("lat", 120.0);
+            item.put("lng", 30.0);
+            list.add(item);
+        }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        mListener.onItemClicked(parent, view, position, id);
-        this.dismiss();
+        return list;
     }
 }

@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.unlucky.gpsmover.app.util.Common;
+
 import java.util.List;
 import java.util.Map;
 
@@ -44,9 +46,10 @@ public class FavLocationListAdapter extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.list_item_fav_location, null);
+            convertView = inflater.inflate(resId, null);
             holder.title = (TextView)convertView.findViewById(R.id.list_item_fav_location_title);
             holder.content = (TextView)convertView.findViewById(R.id.list_item_fav_location_content);
+            convertView.setTag(holder);
         } else {
             holder = (ViewHolder)convertView.getTag();
         }

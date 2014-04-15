@@ -297,8 +297,8 @@ public class MainActivity extends FragmentActivity
     }
 
     @Override
-    public void onItemClicked(AdapterView<?> parent, View view, int position, long id) {
-        Map<String, Object> selectedItem = (Map<String, Object>)parent.getSelectedItem();
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Map<String, Object> selectedItem = (Map<String, Object>)parent.getItemAtPosition(position);
         String title = selectedItem.get("title").toString();
         double lat = Double.valueOf(selectedItem.get("lat").toString());
         double lng = Double.valueOf(selectedItem.get("lng").toString());
