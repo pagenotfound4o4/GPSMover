@@ -30,6 +30,7 @@ public class FavLocationDialogFragment extends DialogFragment
 
     @Override
     public void onAttach(Activity activity) {
+        super.onAttach(activity);
         try {
             mListener = (FavLocationDialogListener)activity;
         } catch (ClassCastException e) {
@@ -47,6 +48,9 @@ public class FavLocationDialogFragment extends DialogFragment
         mListView = (ListView)view.findViewById(R.id.fav_location_list);
         mListView.setAdapter(new FavLocationListAdapter(getActivity(),
                 R.layout.list_item_fav_location, getData()));
+        builder.setTitle(getString(R.string.dialog_fav_location_title))
+                .setIcon(R.drawable.ic_menu_star)
+                .setView(view);
 
         return builder.create();
     }
