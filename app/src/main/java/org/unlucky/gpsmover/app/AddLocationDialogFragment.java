@@ -65,7 +65,7 @@ public class AddLocationDialogFragment extends DialogFragment {
     }
 
     /**
-     * obtain location name
+     * Get location name
      * @return location name
      */
     public String getEditText() {

@@ -15,13 +15,13 @@ import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -30,23 +30,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.unlucky.gpsmover.app.util.Common;
 
+import java.util.Map;
+
 public class MainActivity extends FragmentActivity
         implements View.OnClickListener, GotoLocationDialogFragment.GotoLocationDialogListener,
-        AddLocationDialogFragment.AddLocationDialogListener {
+        AddLocationDialogFragment.AddLocationDialogListener,
+        FavLocationDialogFragment.FavLocationDialogListener {
     private static final int UPDATE_INTERVAL_TIME = 1000; // 1s
     private static final int REQ_SETTINGS = 1;
-    private static final String DLG_ADD_LOCATION = "AddLocationDialog";
-    private static final String DLG_GOTO_LOCATION = "GotoLocationDialog";
 
     private boolean isServiceBind = false;
 
-    private Button start_btn, stop_btn;
-    private Button zoom_in_btn, zoom_out_btn;
-    private ImageButton mode_btn, search_btn, history_btn, fav_btn;
-
     private LatLng current_location;
     private GoogleMap mMap;
-    private GoogleMapOptions options = new GoogleMapOptions();
+    //private GoogleMapOptions options = new GoogleMapOptions();
     private MarkerOptions markerOpt = new MarkerOptions();
     private Marker marker;
     private GPSMoverService gpsMoverService;
@@ -83,11 +80,11 @@ public class MainActivity extends FragmentActivity
             return true;
         } else if (id == R.id.action_add_location) {
             AddLocationDialogFragment dialog = new AddLocationDialogFragment();
-            dialog.show(getSupportFragmentManager(), DLG_ADD_LOCATION);
+            dialog.show(getSupportFragmentManager(), AddLocationDialogFragment.class.getName());
             return true;
         } else if (id == R.id.action_goto_location) {
             GotoLocationDialogFragment dialog = new GotoLocationDialogFragment();
-            dialog.show(getSupportFragmentManager(), DLG_GOTO_LOCATION);
+            dialog.show(getSupportFragmentManager(), GotoLocationDialogFragment.class.getName());
             return true;
         } else if (id == R.id.action_about) {
             return true;
@@ -153,21 +150,21 @@ public class MainActivity extends FragmentActivity
      * initialize UI in activity
      */
     private void initUI() {
-        start_btn = (Button)findViewById(R.id.start_btn);
+        final Button start_btn = (Button)findViewById(R.id.start_btn);
         start_btn.setOnClickListener(this);
-        stop_btn = (Button)findViewById(R.id.stop_btn);
+        final Button stop_btn = (Button)findViewById(R.id.stop_btn);
         stop_btn.setOnClickListener(this);
-        zoom_in_btn = (Button)findViewById(R.id.zoom_in_btn);
+        final Button zoom_in_btn = (Button)findViewById(R.id.zoom_in_btn);
         zoom_in_btn.setOnClickListener(this);
-        zoom_out_btn = (Button)findViewById(R.id.zoom_out_btn);
+        final Button zoom_out_btn = (Button)findViewById(R.id.zoom_out_btn);
         zoom_out_btn.setOnClickListener(this);
-        mode_btn = (ImageButton)findViewById(R.id.mode_btn);
+        final ImageButton mode_btn = (ImageButton)findViewById(R.id.mode_btn);
         mode_btn.setOnClickListener(this);
-        search_btn = (ImageButton)findViewById(R.id.search_btn);
+        final ImageButton search_btn = (ImageButton)findViewById(R.id.search_btn);
         search_btn.setOnClickListener(this);
-        history_btn = (ImageButton)findViewById(R.id.history_btn);
+        final ImageButton history_btn = (ImageButton)findViewById(R.id.history_btn);
         history_btn.setOnClickListener(this);
-        fav_btn = (ImageButton)findViewById(R.id.fav_btn);
+        final ImageButton fav_btn = (ImageButton)findViewById(R.id.fav_btn);
         fav_btn.setOnClickListener(this);
     }
 
@@ -272,28 +269,40 @@ public class MainActivity extends FragmentActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         String tag = dialog.getTag();
-        if (tag.equals(DLG_ADD_LOCATION)) {
+        if (tag.equals(AddLocationDialogFragment.class.getName())) {
             String str = ((AddLocationDialogFragment)dialog).getEditText();
             Common.log("get text from add->" + str);
-        } else if (tag.equals(DLG_GOTO_LOCATION)) {
+            dialog.dismiss();
+        } else if (tag.equals(GotoLocationDialogFragment.class.getName())) {
             String[] text_array = ((GotoLocationDialogFragment)dialog).getEditText().split(",");
             if (text_array.length == 2) {
                 try {
-                    double lat = Double.valueOf(text_array[0]).doubleValue();
-                    double lng = Double.valueOf(text_array[1]).doubleValue();
+                    double lat = Double.valueOf(text_array[0]);
+                    double lng = Double.valueOf(text_array[1]);
                     current_location = new LatLng(lat, lng);
                     updateMapMarker(current_location);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
-                Toast.makeText(this, getString(R.string.error_format), Toast.LENGTH_SHORT);
+                Toast.makeText(this, getString(R.string.error_format), Toast.LENGTH_SHORT).show();
             }
+            dialog.dismiss();
         }
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         dialog.dismiss();
+    }
+
+    @Override
+    public void onItemClicked(AdapterView<?> parent, View view, int position, long id) {
+        Map<String, Object> selectedItem = (Map<String, Object>)parent.getSelectedItem();
+        String title = selectedItem.get("title").toString();
+        double lat = Double.valueOf(selectedItem.get("lat").toString());
+        double lng = Double.valueOf(selectedItem.get("lng").toString());
+        //TODO: more to be implemented
+        Common.log("title->" + title + " lat->" + lat + " lng->" + lng);
     }
 }

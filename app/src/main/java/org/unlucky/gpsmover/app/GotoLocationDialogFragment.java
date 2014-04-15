@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import org.unlucky.gpsmover.app.util.Common;
+
 /**
  * A dialog that goto the position you input.
  */
@@ -65,8 +67,8 @@ public class GotoLocationDialogFragment extends DialogFragment {
     }
 
     /**
-     * obtain latitude and longitude user input
-     * @return
+     * Get latitude and longitude user input
+     * @return latitude and longitude raw string
      */
     public String getEditText() {
         return location.getText().toString();
