@@ -140,6 +140,8 @@ public class MainActivity extends FragmentActivity
             case R.id.history_btn:
                 break;
             case R.id.fav_btn:
+                FavLocationDialogFragment dialog = new FavLocationDialogFragment();
+                dialog.show(getSupportFragmentManager(), FavLocationDialogFragment.class.getName());
                 break;
             default:
                 break;
