@@ -269,11 +269,11 @@ public class MainActivity extends FragmentActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         String tag = dialog.getTag();
-        if (tag.equals(AddLocationDialogFragment.class.getName())) {
+        if (AddLocationDialogFragment.class.getName().equals(tag)) {
             String str = ((AddLocationDialogFragment)dialog).getEditText();
             Common.log("get text from add->" + str);
             dialog.dismiss();
-        } else if (tag.equals(GotoLocationDialogFragment.class.getName())) {
+        } else if (GotoLocationDialogFragment.class.getName().equals(tag)) {
             String[] text_array = ((GotoLocationDialogFragment)dialog).getEditText().split(",");
             if (text_array.length == 2) {
                 try {

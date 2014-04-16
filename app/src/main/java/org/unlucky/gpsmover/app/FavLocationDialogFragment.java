@@ -26,8 +26,6 @@ public class FavLocationDialogFragment extends DialogFragment {
 
     private FavLocationDialogListener mListener;
 
-    private ListView mListView;
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -45,7 +43,7 @@ public class FavLocationDialogFragment extends DialogFragment {
 
         View view = LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_fav_location, null);
-        mListView = (ListView)view.findViewById(R.id.fav_location_list);
+        final ListView mListView = (ListView)view.findViewById(R.id.fav_location_list);
         mListView.setAdapter(new FavLocationListAdapter(getActivity(),
                 R.layout.list_item_fav_location, getData()));
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
