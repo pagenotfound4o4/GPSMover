@@ -32,7 +32,8 @@ public class GPSMoverService extends Service
     private static final int NOTIFICATION_ID = 0x1234;
     private static final float MAX_GRAVITY = 9.8f / 2;
     private static final float MIN_GRAVITY = -9.8f / 2;
-    private static final double UPDATE_STEP = 0.000001;
+    private static final float EPS = 1.0f;
+    private static final double UPDATE_STEP = 0.0000005;
 
     private double current_lat, current_lng;
     private SensorManager mSensorManager;
@@ -184,7 +185,10 @@ public class GPSMoverService extends Service
             x = Math.min(MAX_GRAVITY, x);
             x = Math.max(MIN_GRAVITY, x);
             // change longitude, move toward west when x > 0.0, move toward east when x < 0.0
-            current_lng -= UPDATE_STEP * x;
+            if (Math.abs(x) > EPS) {
+                current_lng -= UPDATE_STEP * x;
+                Common.log("x changed-->" + x);
+            }
             // when longitude overflow
             if (current_lng > 180.0) {
                 current_lng = current_lng - 360.0;
@@ -195,7 +199,11 @@ public class GPSMoverService extends Service
             float y = event.values[1];
             y = Math.min(MAX_GRAVITY, y);
             y = Math.max(MIN_GRAVITY, y);
-            current_lat -= UPDATE_STEP * y;
+            // change latitude, move toward south when y > EPS, move toward north when y < EPS
+            if (Math.abs(y) > EPS) {
+                current_lat -= UPDATE_STEP * y;
+                Common.log("y changed-->" + y);
+            }
             // when latitude overflow
             if (current_lat > 90.0) {
                 current_lat = 90.0;
