@@ -28,8 +28,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.unlucky.gpsmover.app.db.FavoriteLocation;
+import org.unlucky.gpsmover.app.db.FavoritesHelper;
 import org.unlucky.gpsmover.app.util.Common;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 public class MainActivity extends FragmentActivity
@@ -229,13 +232,12 @@ public class MainActivity extends FragmentActivity
             Location a = new Location("prev");
             a.setLatitude(prev.latitude);
             a.setLongitude(prev.longitude);
-            //Common.log("Location a is " + a.toString());
             Location b = new Location("current");
             b.setLatitude(current_location.latitude);
             b.setLongitude(current_location.longitude);
-            //Common.log("Location b is " + b.toString());
-            float dist = a.distanceTo(b);
-            Common.log("distance is " + dist);
+            Common.log("lat=" + (b.getLatitude()-a.getLatitude())
+                    + ",lng=" + (b.getLongitude()-a.getLongitude())
+                    + ",dist=" + b.distanceTo(a));
 
             updateMapMarker(current_location);
             handler.postDelayed(updateLocationThread, UPDATE_INTERVAL_TIME);
@@ -270,8 +272,14 @@ public class MainActivity extends FragmentActivity
     public void onDialogPositiveClick(DialogFragment dialog) {
         String tag = dialog.getTag();
         if (AddLocationDialogFragment.class.getName().equals(tag)) {
-            String str = ((AddLocationDialogFragment)dialog).getEditText();
-            Common.log("get text from add->" + str);
+            String title = ((AddLocationDialogFragment)dialog).getEditText();
+            try {
+                FavoritesHelper.getInstance(this).open().insertFavoriteLocation(
+                        new FavoriteLocation(title, current_location.latitude,
+                                current_location.longitude, mMap.getCameraPosition().zoom));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             dialog.dismiss();
         } else if (GotoLocationDialogFragment.class.getName().equals(tag)) {
             String[] text_array = ((GotoLocationDialogFragment)dialog).getEditText().split(",");
@@ -299,10 +307,12 @@ public class MainActivity extends FragmentActivity
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Map<String, Object> selectedItem = (Map<String, Object>)parent.getItemAtPosition(position);
-        String title = selectedItem.get("title").toString();
-        double lat = Double.valueOf(selectedItem.get("lat").toString());
-        double lng = Double.valueOf(selectedItem.get("lng").toString());
-        //TODO: more to be implemented
-        Common.log("title->" + title + " lat->" + lat + " lng->" + lng);
+        FavoriteLocation selectedFavorite = (FavoriteLocation)selectedItem.get("favorite");
+        String title = selectedFavorite.getTitle();
+        double lat = selectedFavorite.getLatitude();
+        double lng = selectedFavorite.getLongitude();
+        float zoomlevel = selectedFavorite.getZoomLevel();
+        //TODO: move camera to location
+        Common.log("title->" + title + " lat->" + lat + " lng->" + lng + "zoom->" + zoomlevel);
     }
 }
