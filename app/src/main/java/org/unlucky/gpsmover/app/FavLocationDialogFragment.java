@@ -3,6 +3,7 @@ package org.unlucky.gpsmover.app;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -10,6 +11,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import org.unlucky.gpsmover.app.db.FavoriteLocation;
+import org.unlucky.gpsmover.app.db.FavoritesHelper;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,15 +67,20 @@ public class FavLocationDialogFragment extends DialogFragment {
 
     private List<? extends Map<String, ?>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        //TODO: read data from resource
-
-        //test data
-        for (int i=0; i<10; i++) {
-            Map<String, Object> item = new HashMap<String, Object>();
-            item.put("title", "Location " + i);
-            item.put("lat", 120.0);
-            item.put("lng", 30.0);
-            list.add(item);
+        try {
+            Cursor cursor = FavoritesHelper.getInstance(getActivity()).open().queryAll();
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String title = cursor.getString(cursor.getColumnIndex("title"));
+                double lat = cursor.getDouble(cursor.getColumnIndex("latitude"));
+                double lng = cursor.getDouble(cursor.getColumnIndex("longitude"));
+                int zoomLevel = cursor.getInt(cursor.getColumnIndex("zoomlevel"));
+                Map<String, Object> item = new HashMap<String, Object>();
+                item.put("favorite", new FavoriteLocation(id, title, lat, lng, zoomLevel));
+                list.add(item);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return list;
