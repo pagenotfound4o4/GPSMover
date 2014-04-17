@@ -43,6 +43,7 @@ public class MainActivity extends FragmentActivity
     private static final int REQ_SETTINGS = 1;
 
     private boolean isServiceBind = false;
+    private float current_zoomLevel = 1.0f;
 
     private LatLng current_location;
     private GoogleMap mMap;
@@ -239,17 +240,20 @@ public class MainActivity extends FragmentActivity
                     + ",lng=" + (b.getLongitude()-a.getLongitude())
                     + ",dist=" + b.distanceTo(a));
 
-            updateMapMarker(current_location);
+            updateMapMarker(current_location, false);
             handler.postDelayed(updateLocationThread, UPDATE_INTERVAL_TIME);
         }
     };
 
-    private void updateMapMarker(LatLng pos) {
+    private void updateMapMarker(LatLng pos, boolean needZoom) {
         marker.setPosition(pos);
         marker.setTitle(getString(R.string.map_marker_title));
         marker.setSnippet(String.format(getString(R.string.map_marker_snippet),
                 pos.latitude, pos.longitude));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
+        if (needZoom) {
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(current_zoomLevel));
+        }
     }
 
     /**
@@ -288,7 +292,7 @@ public class MainActivity extends FragmentActivity
                     double lat = Double.valueOf(text_array[0]);
                     double lng = Double.valueOf(text_array[1]);
                     current_location = new LatLng(lat, lng);
-                    updateMapMarker(current_location);
+                    updateMapMarker(current_location, false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -308,11 +312,9 @@ public class MainActivity extends FragmentActivity
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Map<String, Object> selectedItem = (Map<String, Object>)parent.getItemAtPosition(position);
         FavoriteLocation selectedFavorite = (FavoriteLocation)selectedItem.get("favorite");
-        String title = selectedFavorite.getTitle();
         double lat = selectedFavorite.getLatitude();
         double lng = selectedFavorite.getLongitude();
-        float zoomlevel = selectedFavorite.getZoomLevel();
-        //TODO: move camera to location
-        Common.log("title->" + title + " lat->" + lat + " lng->" + lng + "zoom->" + zoomlevel);
+        current_zoomLevel = selectedFavorite.getZoomLevel();
+        updateMapMarker(new LatLng(lat, lng), true);
     }
 }
