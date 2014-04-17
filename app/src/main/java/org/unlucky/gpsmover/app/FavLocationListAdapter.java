@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.unlucky.gpsmover.app.db.FavoriteLocation;
 import org.unlucky.gpsmover.app.util.Common;
 
 import java.util.List;
@@ -55,9 +56,10 @@ public class FavLocationListAdapter extends BaseAdapter {
         }
 
         Map<String, Object> item = (Map<String, Object>)dataList.get(position);
-        holder.title.setText(item.get("title").toString());
+        FavoriteLocation favorite = (FavoriteLocation)item.get("favorite");
+        holder.title.setText(favorite.getTitle());
         holder.content.setText(String.format(context.getString(R.string.list_item_content),
-                Double.valueOf(item.get("lat").toString()), Double.valueOf(item.get("lng").toString())));
+                favorite.getLatitude(), favorite.getLongitude()));
 
         return convertView;
     }
