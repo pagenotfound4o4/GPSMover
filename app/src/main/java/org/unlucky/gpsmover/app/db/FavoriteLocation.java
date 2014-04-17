@@ -5,20 +5,34 @@ import android.location.Location;
 import com.google.android.gms.maps.model.LatLng;
 
 public class FavoriteLocation {
+    private int id;
     private String title;
     private double latitude;
     private double longitude;
-    private int zoomLevel;
+    private float zoomLevel;
 
     public FavoriteLocation(String title, double latitude, double longitude) {
-        this(title, latitude, longitude, 15);
+        this(0, title, latitude, longitude, 15);
     }
 
-    public FavoriteLocation(String title, double latitude, double longitude, int zoomLevel) {
+    public FavoriteLocation(String title, double latitude, double longitude, float zoomLevel) {
+        this(0, title, latitude, longitude, zoomLevel);
+    }
+
+    public FavoriteLocation(int id, String title, double latitude, double longitude, float zoomLevel) {
+        this.id = id;
         this.title = title;
         this.latitude = latitude;
         this.longitude = longitude;
         this.zoomLevel = zoomLevel;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -45,11 +59,11 @@ public class FavoriteLocation {
         this.longitude = longitude;
     }
 
-    public int getZoomLevel() {
+    public float getZoomLevel() {
         return zoomLevel;
     }
 
-    public void setZoomLevel(int zoomLevel) {
+    public void setZoomLevel(float zoomLevel) {
         this.zoomLevel = zoomLevel;
     }
 

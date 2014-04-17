@@ -11,7 +11,7 @@ public class FavoritesHelper {
     public final static String TABLE_NAME = "tb_favorites";
     public final static String[] FIELD_NAME = {"id", "title", "latitude", "longitude", "zoomlevel"};
     public final static String[] FIELD_TYPE = {"integer primary key autoincrement",
-            "text", "double", "double", "integer"};
+            "text", "double", "double", "float"};
 
     private static FavoritesHelper inst = null;
 
@@ -65,5 +65,18 @@ public class FavoritesHelper {
     public int update(String table, ContentValues cv, String whereClause,
                       String[] whereArgs) {
         return db.update(table, cv, whereClause, whereArgs);
+    }
+
+    public Cursor queryAll() {
+        return this.query(TABLE_NAME, FIELD_NAME, null, null, null, null, null);
+    }
+
+    public long insertFavoriteLocation(FavoriteLocation favorite) {
+        ContentValues cv = new ContentValues();
+        cv.put("title", favorite.getTitle());
+        cv.put("latitude", favorite.getLatitude());
+        cv.put("longitude", favorite.getLongitude());
+        cv.put("zoomlevel", favorite.getZoomLevel());
+        return this.insert(TABLE_NAME, cv);
     }
 }
