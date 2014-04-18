@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,10 +40,10 @@ public class MainActivity extends FragmentActivity
         implements View.OnClickListener, GotoLocationDialogFragment.GotoLocationDialogListener,
         AddLocationDialogFragment.AddLocationDialogListener,
         FavLocationDialogFragment.FavLocationDialogListener {
-    private static final int UPDATE_INTERVAL_TIME = 1000; // 1s
     private static final int REQ_SETTINGS = 1;
 
     private boolean isServiceBind = false;
+    private int UPDATE_INTERVAL_TIME = 1000; // 1s
     private float current_zoomLevel = 1.0f;
 
     private LatLng current_location;
@@ -57,14 +58,21 @@ public class MainActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         gpsMoverService = null;
+        initSettings(true);
         initMap();
         initUI();
     }
 
     @Override
+    protected void onPause() {
+        storeSettings();
+        super.onPause();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQ_SETTINGS) {
-            // TODO: handle return from settings
+            initSettings(false);
         }
     }
 
@@ -184,13 +192,40 @@ public class MainActivity extends FragmentActivity
         mMap.getUiSettings().setTiltGesturesEnabled(false);
 
         // init a marker
-        current_location = new LatLng(30.0, 120.0);
         markerOpt.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         marker = mMap.addMarker(markerOpt.position(current_location)
                 .title(getString(R.string.map_marker_title))
                 .snippet(String.format(getString(R.string.map_marker_snippet),
                         current_location.latitude, current_location.longitude)));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(current_location));
+    }
+
+    /**
+     * store last known location and zoom level
+     */
+    private void storeSettings() {
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        editor.putString("latitude", String.valueOf(current_location.latitude));
+        editor.putString("longitude", String.valueOf(current_location.longitude));
+        editor.putString("zoom_level", String.valueOf(current_zoomLevel));
+        editor.commit();
+    }
+
+    /**
+     * restore related settings
+     * @param isLaunch whether it is launching the app
+     */
+    private void initSettings(boolean isLaunch) {
+        if (isLaunch) {
+            SharedPreferences sp = getPreferences(MODE_PRIVATE);
+            double lat = Double.valueOf(sp.getString("latitude", "0.0"));
+            double lng = Double.valueOf(sp.getString("longitude", "0.0"));
+            current_location = new LatLng(lat, lng);
+            current_zoomLevel = Float.valueOf(sp.getString("zoom_level", "1.0f"));
+        }
+        SharedPreferences sp = getSharedPreferences("org.unlucky.gpsmover.app_preferences",
+                MODE_PRIVATE);
+        UPDATE_INTERVAL_TIME = Integer.valueOf(sp.getString("perf_key_update_interval", "1000"));
     }
 
     public int dpToPx(int dp) {
