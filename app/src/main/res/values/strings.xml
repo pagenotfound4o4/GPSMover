@@ -40,6 +40,6 @@
     <string name="perf_title_manual_altitude">Manual altitude</string>
     <string name="perf_summary_manual_altitude">Set GPS fix altitude value in meters</string>
     <string name="perf_title_gps_error">Random GPS error</string>
-    <string name="perf_summary_gps_error">Set GPS random error in meters</string>
+    <string name="perf_summary_gps_error">Set GPS random error (0.0000001)</string>
 
 </resources>

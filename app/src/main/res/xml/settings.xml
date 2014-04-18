@@ -7,20 +7,29 @@
 
         <EditTextPreference android:key="perf_key_accuracy"
             android:title="@string/perf_title_accuracy"
-            android:summary="@string/perf_summary_accuracy"/>
+            android:summary="@string/perf_summary_accuracy"
+            android:inputType="numberDecimal"
+            android:defaultValue="1.0"/>
         <EditTextPreference android:key="perf_key_update_interval"
             android:title="@string/perf_title_update_interval"
-            android:summary="@string/perf_summary_update_interval"/>
+            android:summary="@string/perf_summary_update_interval"
+            android:inputType="number"
+            android:defaultValue="1000"/>
         <CheckBoxPreference android:key="perf_key_auto_altitude"
             android:title="@string/perf_title_auto_altitude"
             android:summary="@string/perf_summary_auto_altitude"
-            android:disableDependentsState="true"/>
+            android:disableDependentsState="true"
+            android:defaultValue="true"/>
         <EditTextPreference android:key="perf_key_manual_altitude"
             android:title="@string/perf_title_manual_altitude"
             android:summary="@string/perf_summary_manual_altitude"
-            android:dependency="perf_key_auto_altitude"/>
+            android:dependency="perf_key_auto_altitude"
+            android:inputType="numberDecimal"
+            android:defaultValue="5.0"/>
         <EditTextPreference android:key="perf_key_gps_error"
             android:title="@string/perf_title_gps_error"
-            android:summary="@string/perf_summary_gps_error"/>
+            android:summary="@string/perf_summary_gps_error"
+            android:inputType="numberDecimal"
+            android:defaultValue="5"/>
     </PreferenceCategory>
 </PreferenceScreen>
