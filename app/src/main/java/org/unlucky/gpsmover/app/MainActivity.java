@@ -48,7 +48,6 @@ public class MainActivity extends FragmentActivity
 
     private LatLng current_location;
     private GoogleMap mMap;
-    //private GoogleMapOptions options = new GoogleMapOptions();
     private MarkerOptions markerOpt = new MarkerOptions();
     private Marker marker;
     private GPSMoverService gpsMoverService;
@@ -226,18 +225,6 @@ public class MainActivity extends FragmentActivity
         SharedPreferences sp = getSharedPreferences("org.unlucky.gpsmover.app_preferences",
                 MODE_PRIVATE);
         UPDATE_INTERVAL_TIME = Integer.valueOf(sp.getString("perf_key_update_interval", "1000"));
-    }
-
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
-    }
-
-    public int pxToDp(int px) {
-        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-        int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return dp;
     }
 
     ServiceConnection conn = new ServiceConnection() {
