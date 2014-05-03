@@ -139,10 +139,6 @@ public class GPSMoverService extends Service
         public void run() {
             Location gps_location = createLocation(LocationManager.GPS_PROVIDER);
             Location network_location = createLocation(LocationManager.NETWORK_PROVIDER);
-            //mLocationManager.setTestProviderStatus(LocationManager.GPS_PROVIDER, LocationProvider.AVAILABLE,
-            //        null, System.currentTimeMillis());
-            //mLocationManager.setTestProviderStatus(LocationManager.NETWORK_PROVIDER, LocationProvider.AVAILABLE,
-            //        null, System.currentTimeMillis());
             int value = setMockLocationSettings();
             try {
                 mLocationManager.setTestProviderLocation(LocationManager.GPS_PROVIDER, gps_location);
@@ -187,7 +183,6 @@ public class GPSMoverService extends Service
             // change longitude, move toward west when x > 0.0, move toward east when x < 0.0
             if (Math.abs(x) > EPS) {
                 current_lng -= UPDATE_STEP * x;
-                Common.log("x changed-->" + x);
             }
             // when longitude overflow
             if (current_lng > 180.0) {
@@ -202,7 +197,6 @@ public class GPSMoverService extends Service
             // change latitude, move toward south when y > EPS, move toward north when y < EPS
             if (Math.abs(y) > EPS) {
                 current_lat -= UPDATE_STEP * y;
-                Common.log("y changed-->" + y);
             }
             // when latitude overflow
             if (current_lat > 90.0) {
