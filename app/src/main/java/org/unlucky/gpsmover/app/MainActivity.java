@@ -258,9 +258,9 @@ public class MainActivity extends FragmentActivity
             Location b = new Location("current");
             b.setLatitude(current_location.latitude);
             b.setLongitude(current_location.longitude);
-            Common.log("lat=" + (b.getLatitude()-a.getLatitude())
-                    + ",lng=" + (b.getLongitude()-a.getLongitude())
-                    + ",dist=" + b.distanceTo(a));
+            //Common.log("lat=" + (b.getLatitude()-a.getLatitude())
+            //        + ",lng=" + (b.getLongitude()-a.getLongitude())
+            //        + ",dist=" + b.distanceTo(a));
 
             updateMapMarker(current_location, false);
             handler.postDelayed(updateLocationThread, UPDATE_INTERVAL_TIME);
@@ -336,7 +336,8 @@ public class MainActivity extends FragmentActivity
         FavoriteLocation selectedFavorite = (FavoriteLocation)selectedItem.get("favorite");
         double lat = selectedFavorite.getLatitude();
         double lng = selectedFavorite.getLongitude();
+        current_location = new LatLng(lat, lng);
         current_zoomLevel = selectedFavorite.getZoomLevel();
-        updateMapMarker(new LatLng(lat, lng), true);
+        updateMapMarker(current_location, true);
     }
 }
