@@ -1,6 +1,7 @@
 package org.unlucky.gpsmover.app;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -28,7 +29,7 @@ import org.unlucky.gpsmover.app.util.Common;
 
 public class GPSMoverService extends Service
         implements SensorEventListener {
-    private static final int UPDATE_INTERVAL_TIME = 1000;
+    private static final int UPDATE_INTERVAL_TIME = 950;
     private static final int NOTIFICATION_ID = 0x1234;
     private static final float MAX_GRAVITY = 9.8f / 2;
     private static final float MIN_GRAVITY = -9.8f / 2;
@@ -38,6 +39,7 @@ public class GPSMoverService extends Service
     private double current_lat, current_lng;
     private SensorManager mSensorManager;
     private LocationManager mLocationManager;
+    private NotificationCompat.Builder mBuilder;
 
     public static GPSMoverService instance = null;
 
@@ -96,21 +98,29 @@ public class GPSMoverService extends Service
      * @return customized notification
      */
     private Notification createNotification(LatLng latlng) {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        mBuilder = new NotificationCompat.Builder(this);
         mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(String.format(getString(R.string.msg_fake_gps), latlng.longitude, latlng.latitude))
-                .setAutoCancel(false);
+                .setAutoCancel(false)
+                .setOngoing(true);
 
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);//can be clicked repeatedly
 
-        Notification notification = mBuilder.setContentIntent(pendingIntent).build();
-        notification.flags |= Notification.FLAG_NO_CLEAR;//don't clear notification
+        return mBuilder.setContentIntent(pendingIntent).build();
+    }
 
-        return notification;
+    /**
+     * Update customized notification
+     * @param latlng coordinate in notification
+     * @return customized notification
+     */
+    private Notification updateNotification(LatLng latlng) {
+        mBuilder.setContentText(String.format(getString(R.string.msg_fake_gps), latlng.longitude, latlng.latitude));
+        return mBuilder.build();
     }
 
     /**
@@ -148,8 +158,9 @@ public class GPSMoverService extends Service
             } finally {
                 restoreMockLocationSettings(value);
             }
-            startForeground(NOTIFICATION_ID, createNotification(
-                    new LatLng(gps_location.getLatitude(), gps_location.getLongitude())));// update notification
+            // update notification
+            startForeground(NOTIFICATION_ID, updateNotification(
+                    new LatLng(gps_location.getLatitude(), gps_location.getLongitude())));
             handler.postDelayed(updateGpsThread, UPDATE_INTERVAL_TIME);
         }
     };
