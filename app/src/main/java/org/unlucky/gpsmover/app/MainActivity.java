@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +30,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.unlucky.gpsmover.app.db.FavoriteLocation;
 import org.unlucky.gpsmover.app.db.FavoritesHelper;
-import org.unlucky.gpsmover.app.util.Common;
 
 import java.sql.SQLException;
 import java.util.Map;
@@ -39,11 +37,12 @@ import java.util.Map;
 public class MainActivity extends FragmentActivity
         implements View.OnClickListener, GotoLocationDialogFragment.GotoLocationDialogListener,
         AddLocationDialogFragment.AddLocationDialogListener,
-        FavLocationDialogFragment.FavLocationDialogListener {
+        FavLocationDialogFragment.FavLocationDialogListener,
+        GoogleMap.OnMarkerDragListener {
     private static final int REQ_SETTINGS = 1;
 
     private boolean isServiceBind = false;
-    private int UPDATE_INTERVAL_TIME = 1000; // 1s
+    private int UPDATE_INTERVAL_TIME = 1000;// 1s
     private float current_zoomLevel = 1.0f;
 
     private LatLng current_location;
@@ -189,13 +188,15 @@ public class MainActivity extends FragmentActivity
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.getUiSettings().setRotateGesturesEnabled(false);
         mMap.getUiSettings().setTiltGesturesEnabled(false);
+        mMap.setOnMarkerDragListener(this);
 
         // init a marker
         markerOpt.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
         marker = mMap.addMarker(markerOpt.position(current_location)
                 .title(getString(R.string.map_marker_title))
                 .snippet(String.format(getString(R.string.map_marker_snippet),
-                        current_location.latitude, current_location.longitude)));
+                        current_location.latitude, current_location.longitude)).draggable(true));
+
         mMap.moveCamera(CameraUpdateFactory.newLatLng(current_location));
     }
 
@@ -258,20 +259,18 @@ public class MainActivity extends FragmentActivity
             Location b = new Location("current");
             b.setLatitude(current_location.latitude);
             b.setLongitude(current_location.longitude);
-            //Common.log("lat=" + (b.getLatitude()-a.getLatitude())
-            //        + ",lng=" + (b.getLongitude()-a.getLongitude())
-            //        + ",dist=" + b.distanceTo(a));
 
-            updateMapMarker(current_location, false);
+            updateMapMarker(current_location, false, false);
             handler.postDelayed(updateLocationThread, UPDATE_INTERVAL_TIME);
         }
     };
 
-    private void updateMapMarker(LatLng pos, boolean needZoom) {
+    private void updateMapMarker(LatLng pos, boolean needZoom, boolean isDraggable) {
         marker.setPosition(pos);
         marker.setTitle(getString(R.string.map_marker_title));
         marker.setSnippet(String.format(getString(R.string.map_marker_snippet),
                 pos.latitude, pos.longitude));
+        marker.setDraggable(isDraggable);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
         if (needZoom) {
             mMap.animateCamera(CameraUpdateFactory.zoomTo(current_zoomLevel));
@@ -314,7 +313,7 @@ public class MainActivity extends FragmentActivity
                     double lat = Double.valueOf(text_array[0]);
                     double lng = Double.valueOf(text_array[1]);
                     current_location = new LatLng(lat, lng);
-                    updateMapMarker(current_location, false);
+                    updateMapMarker(current_location, false, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -338,6 +337,26 @@ public class MainActivity extends FragmentActivity
         double lng = selectedFavorite.getLongitude();
         current_location = new LatLng(lat, lng);
         current_zoomLevel = selectedFavorite.getZoomLevel();
-        updateMapMarker(current_location, true);
+        updateMapMarker(current_location, true, true);
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+        LatLng mLocation = marker.getPosition();
+        marker.setSnippet(String.format(getString(R.string.map_marker_snippet),
+                mLocation.latitude, mLocation.longitude));
+        marker.showInfoWindow();
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        current_location = marker.getPosition();
+        updateMapMarker(current_location, false, true);
+        marker.hideInfoWindow();
     }
 }
