@@ -1,7 +1,6 @@
-package org.unlucky.gpsmover;
+package org.unlucky.gpsmover.service;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -14,7 +13,6 @@ import android.hardware.SensorManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
@@ -25,6 +23,8 @@ import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.unlucky.gpsmover.R;
+import org.unlucky.gpsmover.ui.MainActivity;
 import org.unlucky.gpsmover.util.Common;
 
 public class GPSMoverService extends Service

@@ -1,4 +1,4 @@
-package org.unlucky.gpsmover.db;
+package org.unlucky.gpsmover.model;
 
 import android.location.Location;
 

@@ -1,4 +1,4 @@
-package org.unlucky.gpsmover;
+package org.unlucky.gpsmover.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,8 +11,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.unlucky.gpsmover.db.FavoriteLocation;
-import org.unlucky.gpsmover.db.FavoritesHelper;
+import org.unlucky.gpsmover.R;
+import org.unlucky.gpsmover.model.FavoriteLocation;
+import org.unlucky.gpsmover.model.FavoritesHelper;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

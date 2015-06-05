@@ -1,4 +1,4 @@
-package org.unlucky.gpsmover.db;
+package org.unlucky.gpsmover.model;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

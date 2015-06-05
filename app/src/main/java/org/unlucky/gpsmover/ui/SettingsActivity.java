@@ -1,7 +1,9 @@
-package org.unlucky.gpsmover;
+package org.unlucky.gpsmover.ui;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+
+import org.unlucky.gpsmover.R;
 
 public class SettingsActivity extends PreferenceActivity {
 

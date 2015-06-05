@@ -1,4 +1,4 @@
-package org.unlucky.gpsmover;
+package org.unlucky.gpsmover.ui;
 
 import android.app.ActivityManager;
 import android.content.ComponentName;
@@ -28,8 +28,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.unlucky.gpsmover.db.FavoriteLocation;
-import org.unlucky.gpsmover.db.FavoritesHelper;
+import org.unlucky.gpsmover.service.GPSMoverService;
+import org.unlucky.gpsmover.R;
+import org.unlucky.gpsmover.model.FavoriteLocation;
+import org.unlucky.gpsmover.model.FavoritesHelper;
 
 import java.sql.SQLException;
 import java.util.Map;
