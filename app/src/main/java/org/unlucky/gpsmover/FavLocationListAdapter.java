@@ -1,4 +1,4 @@
-package org.unlucky.gpsmover.app;
+package org.unlucky.gpsmover;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import org.unlucky.gpsmover.app.db.FavoriteLocation;
-import org.unlucky.gpsmover.app.util.Common;
+import org.unlucky.gpsmover.db.FavoriteLocation;
+import org.unlucky.gpsmover.util.Common;
 
 import java.util.List;
 import java.util.Map;

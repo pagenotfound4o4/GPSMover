@@ -1,4 +1,4 @@
-package org.unlucky.gpsmover.app.util;
+package org.unlucky.gpsmover.util;
 
 import android.util.Log;
 

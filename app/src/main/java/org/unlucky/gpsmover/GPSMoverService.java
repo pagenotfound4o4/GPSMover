@@ -1,4 +1,4 @@
-package org.unlucky.gpsmover.app;
+package org.unlucky.gpsmover;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -25,7 +25,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import org.unlucky.gpsmover.app.util.Common;
+import org.unlucky.gpsmover.util.Common;
 
 public class GPSMoverService extends Service
         implements SensorEventListener {
@@ -99,8 +99,8 @@ public class GPSMoverService extends Service
      */
     private Notification createNotification(LatLng latlng) {
         mBuilder = new NotificationCompat.Builder(this);
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
-                .setSmallIcon(R.drawable.ic_launcher)
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(String.format(getString(R.string.msg_fake_gps), latlng.longitude, latlng.latitude))
                 .setAutoCancel(false)

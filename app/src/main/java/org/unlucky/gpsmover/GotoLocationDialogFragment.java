@@ -1,4 +1,4 @@
-package org.unlucky.gpsmover.app;
+package org.unlucky.gpsmover;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,28 +10,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-/**
- * A dialog that add the location to your favourite.
- */
-public class AddLocationDialogFragment extends DialogFragment {
+import org.unlucky.gpsmover.util.Common;
 
-    public interface AddLocationDialogListener {
+/**
+ * A dialog that goto the position you input.
+ */
+public class GotoLocationDialogFragment extends DialogFragment {
+
+    public interface GotoLocationDialogListener {
         public void onDialogPositiveClick(DialogFragment dialog);
         public void onDialogNegativeClick(DialogFragment dialog);
     }
 
-    AddLocationDialogListener mListener;
+    GotoLocationDialogListener mListener;
 
-    private EditText name;
+    private EditText location;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (AddLocationDialogListener)activity;
+            mListener = (GotoLocationDialogListener)activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement AddLocationDialogListener");
+                    + " must implement GotoLocationDialogListener");
         }
     }
 
@@ -41,23 +43,23 @@ public class AddLocationDialogFragment extends DialogFragment {
 
         // set view
         View view = LayoutInflater.from(getActivity())
-                .inflate(R.layout.dialog_add_location, null);
-        name = (EditText)view.findViewById(R.id.add_location_edt);
-        builder.setTitle(R.string.dialog_add_location_title)
-                .setIcon(android.R.drawable.ic_menu_add)
+                .inflate(R.layout.dialog_goto_location, null);
+        location = (EditText)view.findViewById(R.id.goto_location_edt);
+        builder.setTitle(R.string.dialog_goto_location_title)
+                .setIcon(android.R.drawable.ic_menu_myplaces)
                 .setView(view);
 
         // set listener
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mListener.onDialogPositiveClick(AddLocationDialogFragment.this);
+                mListener.onDialogPositiveClick(GotoLocationDialogFragment.this);
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mListener.onDialogNegativeClick(AddLocationDialogFragment.this);
+                mListener.onDialogNegativeClick(GotoLocationDialogFragment.this);
             }
         });
 
@@ -65,10 +67,10 @@ public class AddLocationDialogFragment extends DialogFragment {
     }
 
     /**
-     * Get location name
-     * @return location name
+     * Get latitude and longitude user input
+     * @return latitude and longitude raw string
      */
     public String getEditText() {
-        return name.getText().toString();
+        return location.getText().toString();
     }
 }

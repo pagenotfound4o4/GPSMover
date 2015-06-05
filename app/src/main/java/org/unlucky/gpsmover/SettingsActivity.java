@@ -1,4 +1,4 @@
-package org.unlucky.gpsmover.app;
+package org.unlucky.gpsmover;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
