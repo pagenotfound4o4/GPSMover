@@ -36,7 +36,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     private Toolbar mActionBarToolbar;
     private ObjectAnimator mStatusBarColorAnimator;
 
-
     private Handler mHandler;
 
     // When set, these components will be shown/hidden in sync with the action bar
@@ -250,6 +249,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         //mNavDrawerItems.add(NAVDRAWER_ITEM_SEPARATOR);
         mNavDrawerItems.add(NAVDRAWER_ITEM_SEPARATOR_SPECIAL);
         mNavDrawerItems.add(NAVDRAWER_ITEM_SETTINGS);
+        mNavDrawerItems.add(NAVDRAWER_ITEM_HELP);
         mNavDrawerItems.add(NAVDRAWER_ITEM_ABOUT);
 
         createNavDrawerItems();

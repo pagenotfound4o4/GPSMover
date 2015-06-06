@@ -17,10 +17,16 @@
 
         <include layout="@layout/toolbar_actionbar" />
 
-        <fragment android:id="@+id/mapview"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:name="com.google.android.gms.maps.SupportMapFragment"/>
+            android:layout_height="match_parent">
+
+            <fragment android:id="@+id/mapview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+        </FrameLayout>
     </LinearLayout>
 
     <include layout="@layout/navdrawer" />
