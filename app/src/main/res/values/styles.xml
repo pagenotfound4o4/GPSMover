@@ -1,6 +1,18 @@
 <resources>
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo"></style>
+    <style name="AppTheme" parent="AppTheme.Base"/>
+
+    <!-- extend one of the Theme.AppCompat themes -->
+    <style name="AppTheme.Base" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <!-- customize the color palette -->
+        <item name="colorPrimary">@color/material_blue_500</item>
+        <item name="colorPrimaryDark">@color/material_blue_700</item>
+        <item name="colorAccent">@color/material_green_A200</item>
+        <item name="android:windowBackground">@color/gray_background</item>
+        <item name="photoItemForeground">?android:selectableItemBackground</item>
+    </style>
 
     <style name="zoom_button">
         <item name="android:textSize">30sp</item>

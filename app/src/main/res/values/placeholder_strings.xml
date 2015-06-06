@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="placeholder_lorem_ipsum">Hello World!</string>
+    <string name="placeholder_name">Unlucky</string>
+    <string name="placeholder_email">unlucky@example.com</string>
+</resources>

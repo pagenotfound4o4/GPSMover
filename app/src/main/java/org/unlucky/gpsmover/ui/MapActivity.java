@@ -36,7 +36,7 @@ import org.unlucky.gpsmover.model.FavoritesHelper;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class MainActivity extends FragmentActivity
+public class MapActivity extends BaseActivity
         implements View.OnClickListener, GotoLocationDialogFragment.GotoLocationDialogListener,
         AddLocationDialogFragment.AddLocationDialogListener,
         FavLocationDialogFragment.FavLocationDialogListener,
@@ -56,17 +56,22 @@ public class MainActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_map);
         gpsMoverService = null;
         initSettings(true);
         initMap();
-        initUI();
+        //initUI();
     }
 
     @Override
     protected void onPause() {
         storeSettings();
         super.onPause();
+    }
+
+    @Override
+    protected int getSelfNavDrawerItem() {
+        return NAVDRAWER_ITEM_MAP;
     }
 
     @Override
@@ -106,7 +111,7 @@ public class MainActivity extends FragmentActivity
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+        /*switch (v.getId()) {
             case R.id.start_btn:
                 Intent intent = new Intent();
                 intent.setClass(this, GPSMoverService.class);
@@ -154,14 +159,14 @@ public class MainActivity extends FragmentActivity
                 break;
             default:
                 break;
-        }
+        }*/
 
     }
 
     /**
      * initialize UI in activity
      */
-    private void initUI() {
+    /*private void initUI() {
         final Button start_btn = (Button)findViewById(R.id.start_btn);
         start_btn.setOnClickListener(this);
         final Button stop_btn = (Button)findViewById(R.id.stop_btn);
@@ -178,7 +183,7 @@ public class MainActivity extends FragmentActivity
         history_btn.setOnClickListener(this);
         final ImageButton fav_btn = (ImageButton)findViewById(R.id.fav_btn);
         fav_btn.setOnClickListener(this);
-    }
+    }*/
 
     /**
      * initialize map in activity

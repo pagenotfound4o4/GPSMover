@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">GPSMover</string>
+
+    <!-- nav drawer -->
+    <string name="navdrawer_open">open</string>
+    <string name="navdrawer_close">close</string>
+    <string name="navdrawer_item_map">Map</string>
+    <string name="navdrawer_item_fav">My Favourite</string>
+    <string name="navdrawer_item_history">History</string>
+    <string name="navdrawer_item_settings">Settings</string>
+    <string name="navdrawer_item_help">Help &amp; feedback</string>
+    <string name="navdrawer_item_about">About</string>
+
+    <!-- activity -->
+    <string name="title_activity_map">GPSMover</string>
+    <string name="title_activity_favourite">My Favourite</string>
+    <string name="title_activity_history">History</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_help">Help</string>
 
     <!--Main Activity-->
     <string name="action_settings">Settings</string>
@@ -41,5 +57,4 @@
     <string name="perf_summary_manual_altitude">Set GPS fix altitude value in meters</string>
     <string name="perf_title_gps_error">Random GPS error</string>
     <string name="perf_summary_gps_error">Set GPS random error (0.0000001)</string>
-
 </resources>

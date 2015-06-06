@@ -24,7 +24,7 @@ import android.support.v4.app.NotificationCompat;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.unlucky.gpsmover.R;
-import org.unlucky.gpsmover.ui.MainActivity;
+import org.unlucky.gpsmover.ui.MapActivity;
 import org.unlucky.gpsmover.util.Common;
 
 public class GPSMoverService extends Service
@@ -106,7 +106,7 @@ public class GPSMoverService extends Service
                 .setAutoCancel(false)
                 .setOngoing(true);
 
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MapActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);//can be clicked repeatedly
 
