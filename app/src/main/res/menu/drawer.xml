@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/group_feature"
+        android:checkableBehavior="single">
+        <item android:id="@+id/navdrawer_item_map"
+            android:checked="true"
+            android:icon="@drawable/ic_drawer_map"
+            android:title="@string/navdrawer_item_map"/>
+        <item android:id="@+id/navdrawer_item_favourite"
+            android:icon="@drawable/ic_drawer_fav"
+            android:title="@string/navdrawer_item_fav"/>
+        <item android:id="@+id/navdrawer_item_history"
+            android:icon="@drawable/ic_drawer_history"
+            android:title="@string/navdrawer_item_history"/>
+    </group>
+    <group android:id="@+id/group_map_type"
+        android:checkableBehavior="single">
+        <item android:id="@+id/traffic"
+            android:icon="@drawable/ic_drawer_traffic"
+            android:title="Traffic"/>
+        <item android:id="@+id/bus"
+            android:icon="@drawable/ic_drawer_bus"
+            android:title="Bus"/>
+        <item android:id="@+id/bike"
+            android:icon="@drawable/ic_drawer_bike"
+            android:title="Bike"/>
+        <item android:id="@+id/satellite"
+            android:icon="@drawable/ic_drawer_satellite"
+            android:title="Satellite"/>
+        <item android:id="@+id/terrain"
+            android:icon="@drawable/ic_drawer_terrain"
+            android:title="Terrain"/>
+    </group>
+    <group android:id="@+id/group_settings"
+        android:checkableBehavior="single">
+        <item android:id="@+id/navdrawer_item_settings"
+            android:icon="@drawable/ic_drawer_settings"
+            android:title="@string/navdrawer_item_settings"/>
+        <item android:id="@+id/navdrawer_item_help"
+            android:icon="@drawable/ic_drawer_help"
+            android:title="@string/navdrawer_item_help"/>
+        <item android:id="@+id/navdrawer_item_about"
+            android:icon="@drawable/ic_drawer_about"
+            android:title="@string/navdrawer_item_about"/>
+    </group>
+</menu>

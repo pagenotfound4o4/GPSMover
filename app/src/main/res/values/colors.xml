@@ -10,7 +10,7 @@
     <!-- theme color -->
     <color name="theme_primary">@color/material_blue_500</color>
     <color name="theme_primary_dark">@color/material_blue_700</color>
-    <color name="accent">@color/material_green_A200</color>
+    <color name="accent">@color/material_blue_700</color>
     <color name="gray_background">#d3d3d3</color>
     <color name="theme_accent_1">#00b0ff</color>
     <color name="theme_accent_1_light">#8ad4fa</color>
@@ -24,12 +24,16 @@
     <color name="body_text_2_inverse">#8affffff</color>
 
     <!-- navigation drawer color -->
+    <color name="navdrawer_separator">#e5e5e5</color>
     <color name="navdrawer_background">#ffffffff</color>
     <color name="navdrawer_text_color">@color/body_text_1</color>
     <color name="navdrawer_text_color_selected">@color/theme_primary</color>
     <color name="navdrawer_icon_tint">#888</color>
     <color name="navdrawer_icon_tint_selected">@color/theme_primary</color>
     <color name="session_photo_scrim">#6000</color>
+
+    <!-- floating action button color -->
+    <color name="fab_accent">@color/material_blue_500</color>
 
     <color name="green">#ff008000</color>
     <color name="red">#ffff0000</color>

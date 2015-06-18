@@ -1,10 +1,11 @@
 <resources>
-    <style name="AppTheme" parent="AppTheme.Base"/>
+    <style name="Theme.GPSMover" parent="Theme.GPSMover.Base"/>
 
     <!-- extend one of the Theme.AppCompat themes -->
-    <style name="AppTheme.Base" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.GPSMover.Base" parent="Theme.AppCompat.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:fitsSystemWindows">true</item>
 
         <!-- customize the color palette -->
         <item name="colorPrimary">@color/material_blue_500</item>
@@ -14,11 +15,21 @@
         <item name="photoItemForeground">?android:selectableItemBackground</item>
     </style>
 
+    <style name="Theme.GPSMover.WithNavDrawer" parent="Theme.GPSMover">
+        <item name="android:listDivider">@color/navdrawer_separator</item>
+    </style>
+
     <style name="zoom_button">
         <item name="android:textSize">30sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:shadowColor">@color/black</item>
         <item name="android:shadowRadius">2.0</item>
+    </style>
+    
+    <style name="MapFab">
+        <item name="android:layout_gravity">bottom|end</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
     </style>
 </resources>

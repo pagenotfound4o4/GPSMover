@@ -26,6 +26,9 @@
     <string name="action_about">About</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
+
+    <!-- map -->
+    <string name="maps_api_key">AIzaSyDzmXXFAilS6uZBwaMHacDqumfpjMBOkaU</string>
     <string name="map_marker_title">Current Location</string>
     <string name="map_marker_snippet" formatted="false">(%.6f, %.6f)</string>
 
