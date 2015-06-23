@@ -10,14 +10,12 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.design.internal.NavigationMenuView;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -52,6 +50,7 @@ public class MapActivity extends BaseActivity
     private MarkerOptions markerOpt = new MarkerOptions();
     private Marker marker;
     private GPSMoverService gpsMoverService;
+    private NavigationMenuView mNavigationMenuView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +63,12 @@ public class MapActivity extends BaseActivity
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+    }
+
+    @Override
     protected void onPause() {
         storeSettings();
         super.onPause();
@@ -71,7 +76,7 @@ public class MapActivity extends BaseActivity
 
     @Override
     protected int getSelfNavDrawerItem() {
-        return NAVDRAWER_ITEM_MAP;
+        return R.id.navdrawer_item_map;
     }
 
     @Override
@@ -162,28 +167,6 @@ public class MapActivity extends BaseActivity
         }*/
 
     }
-
-    /**
-     * initialize UI in activity
-     */
-    /*private void initUI() {
-        final Button start_btn = (Button)findViewById(R.id.start_btn);
-        start_btn.setOnClickListener(this);
-        final Button stop_btn = (Button)findViewById(R.id.stop_btn);
-        stop_btn.setOnClickListener(this);
-        final Button zoom_in_btn = (Button)findViewById(R.id.zoom_in_btn);
-        zoom_in_btn.setOnClickListener(this);
-        final Button zoom_out_btn = (Button)findViewById(R.id.zoom_out_btn);
-        zoom_out_btn.setOnClickListener(this);
-        final ImageButton mode_btn = (ImageButton)findViewById(R.id.mode_btn);
-        mode_btn.setOnClickListener(this);
-        final ImageButton search_btn = (ImageButton)findViewById(R.id.search_btn);
-        search_btn.setOnClickListener(this);
-        final ImageButton history_btn = (ImageButton)findViewById(R.id.history_btn);
-        history_btn.setOnClickListener(this);
-        final ImageButton fav_btn = (ImageButton)findViewById(R.id.fav_btn);
-        fav_btn.setOnClickListener(this);
-    }*/
 
     /**
      * initialize map in activity

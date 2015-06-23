@@ -13,24 +13,6 @@
             android:icon="@drawable/ic_drawer_history"
             android:title="@string/navdrawer_item_history"/>
     </group>
-    <group android:id="@+id/group_map_type"
-        android:checkableBehavior="single">
-        <item android:id="@+id/traffic"
-            android:icon="@drawable/ic_drawer_traffic"
-            android:title="Traffic"/>
-        <item android:id="@+id/bus"
-            android:icon="@drawable/ic_drawer_bus"
-            android:title="Bus"/>
-        <item android:id="@+id/bike"
-            android:icon="@drawable/ic_drawer_bike"
-            android:title="Bike"/>
-        <item android:id="@+id/satellite"
-            android:icon="@drawable/ic_drawer_satellite"
-            android:title="Satellite"/>
-        <item android:id="@+id/terrain"
-            android:icon="@drawable/ic_drawer_terrain"
-            android:title="Terrain"/>
-    </group>
     <group android:id="@+id/group_settings"
         android:checkableBehavior="single">
         <item android:id="@+id/navdrawer_item_settings"

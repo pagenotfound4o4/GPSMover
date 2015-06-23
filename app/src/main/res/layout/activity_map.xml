@@ -26,10 +26,10 @@
                 android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/test_fab"
+                android:id="@+id/fab_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/MapFab"
+                style="@style/MapFabBottom"
                 android:layout_marginBottom="16dp"
                 android:src="@drawable/ic_fab_add"
                 app:backgroundTint="@color/fab_accent"
@@ -38,12 +38,24 @@
                 app:rippleColor="@color/ripple_material_dark"/>
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/test_fab_2"
+                android:id="@+id/fab_goto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/MapFab"
+                style="@style/MapFabBottom"
                 android:layout_marginBottom="88dp"
                 android:src="@drawable/ic_fab_goto"
+                app:backgroundTint="@color/fab_accent"
+                app:elevation="12dp"
+                app:borderWidth="0dp"
+                app:rippleColor="@color/ripple_material_dark"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_satellite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/MapFabTop"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/fab_satellite_selector"
                 app:backgroundTint="@color/fab_accent"
                 app:elevation="12dp"
                 app:borderWidth="0dp"
@@ -51,6 +63,7 @@
         </FrameLayout>
 
         <android.support.design.widget.NavigationView
+            android:id="@+id/navigation_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
